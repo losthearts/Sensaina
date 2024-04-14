@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/table"
 )
 
 func main() {
@@ -12,7 +14,12 @@ func main() {
 	var initdpi int32
 	var finaldpi int32
 
-	fmt.Println("Sensaina 繊細な")
+	b := lipgloss.NewStyle().Background(lipgloss.Color("#000")).Bold(true).Italic(true).Underline(true).Foreground(lipgloss.Color("#FDB0C0")).Render
+	v := lipgloss.NewStyle().Foreground(lipgloss.Color("#FDB0C0")).Render
+	k := lipgloss.NewStyle().Foreground(lipgloss.Color("#DFCDD0")).Render
+	t := table.New()
+
+	fmt.Println(b("Sensaina (繊細な)"))
 	fmt.Print("What game are you converting from: ")
 	fmt.Scanln(&initgame)
 	fmt.Print("Sensitivity in that game: ")
@@ -25,9 +32,13 @@ func main() {
 	fmt.Print("DPI in that game: ")
 	fmt.Scanln(&finaldpi)
 
-	fmt.Printf("Sensitivity in %v : %f\n", finalgame, sens(yaw[initgame], yaw[finalgame], initsens, initdpi, finaldpi))
-	fmt.Printf("360/cm : %f\n", cmpi(yaw[initgame], initsens, initdpi))
+	sensitivity := sens(yaw[initgame], yaw[finalgame], initsens, initdpi, finaldpi)
+	cm360 := cmpi(yaw[initgame], initsens, initdpi)
 
+	t.Row(k("Game: "), v(finalgame))
+	t.Row(k("Sensitivity: "), v(fmt.Sprintf("%f", sensitivity)))
+	t.Row(k("Centimeter/360: "), v(fmt.Sprintf("%f", cm360)))
+	fmt.Println(t.Render())
 }
 
 func cmpi(iyaw float64, sensitivity float64, dpi int32) float64 {
