@@ -7,4 +7,14 @@ A tool made to convert sensitivities between games.
 
 ---
 
+## INSTALLATION.
+
+- Clone the git repository and cd into it:
+  ```sh
+  git clone git@github.com:losthearts/Sensaina.git
+  cd Sensaina
+  ```
+- Run `go install`.
+- Make sure that your `go/bin` directory is added to `$PATH`.
+
 > Inspired from: [convert-sens](https://github.com/succumbs/convert-sens/).
