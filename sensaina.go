@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"strconv"
@@ -21,14 +22,70 @@ var finaldpi int64
 
 func main() {
 	if len(os.Args) != 1 {
-		if os.Args[1] == "-gui" {
+		if os.Args[1] == "--gui" || os.Args[1] == "-g" {
 			gui()
+		} else if os.Args[1] == "-h" || os.Args[1] == "--help" {
+			help()
 		} else {
-			fmt.Printf("Unexpected argument :: %v\n", os.Args[1])
+			cli()
 		}
 	} else {
 		tui()
 	}
+}
+
+func help() {
+	fmt.Printf("Sensaina 繊細な\n")
+	fmt.Printf("A tool to convert sensitivities between games\n")
+
+	fmt.Printf("Currently CS:GO, Overwatch, and Valorant is supported.\n\n")
+	fmt.Printf("Use without any flags to run the TUI\n\n")
+
+	fmt.Printf("--gui || -g \n")
+	fmt.Printf("\tUse this flag to run the Sensaina GUI\n===\n\n")
+
+	fmt.Printf("sensanai --flag value\n")
+
+	fmt.Printf("--from\n")
+	fmt.Printf("\tFrom Game.\n")
+
+	fmt.Printf("--to\n")
+	fmt.Printf("\tTo Game.\n")
+
+	fmt.Printf("--sens\n")
+	fmt.Printf("\tInitial Sensitivity.\n")
+
+	fmt.Printf("--idpi\n")
+	fmt.Printf("\tInitial DPI.\n")
+
+	fmt.Printf("--fdpi\n")
+	fmt.Printf("\tFinal DPI.\n")
+}
+
+func cli() {
+	fromGamePtr := flag.String("from", "CS:GO", "From Game")
+	toGamePtr := flag.String("to", "CS:GO", "To Game")
+	fromSensPtr := flag.Float64("sens", 100, "From Sensitivity")
+	fromDPIPtr := flag.Int64("idpi", 800, "Initial DPI")
+
+	flag.Parse()
+
+	toDPIPtr := flag.Int64("fdpi", *fromDPIPtr, "Final DPI")
+
+	flag.Parse()
+
+	sensitivity := sens(yaw[*fromGamePtr], yaw[*toGamePtr], *fromSensPtr, *fromDPIPtr, *toDPIPtr)
+	cm360 := cmpi(yaw[*fromGamePtr], *fromSensPtr, *fromDPIPtr)
+
+	fmt.Printf("Sensitivity: %f\n", sensitivity)
+	fmt.Printf("Centimeter/360: %f\n\n", cm360)
+
+	fmt.Println("Initial Game: ", *fromGamePtr)
+	fmt.Println("Final Game: ", *toGamePtr)
+	fmt.Println("From Sensitivity: ", *fromSensPtr)
+	fmt.Println("From DPI: ", *fromDPIPtr)
+	fmt.Println("To DPI: ", *toDPIPtr)
+
 }
 
 func tui() {
